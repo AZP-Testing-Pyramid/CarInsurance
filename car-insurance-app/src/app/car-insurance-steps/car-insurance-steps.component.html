@@ -1,0 +1,165 @@
+<mat-horizontal-stepper [linear]="isLinear" #stepper>
+  <mat-step [stepControl]="carDetailsFormGroup">
+    <form [formGroup]="carDetailsFormGroup">
+      <ng-template matStepLabel>Car Details</ng-template>
+      <mat-form-field>
+        <mat-label>First registration</mat-label>
+        <input matInput placeholder="FirstRegistration" formControlName="firstRegistration" type="date"
+               id="firstRegistration" required>
+      </mat-form-field>
+      <br/>
+      <mat-form-field>
+        <mat-select placeholder="Fuel type" formControlName="fuelType">
+          <mat-option *ngFor="let type of this.fuelTypeTable" [value]="type.value" id="fuelType">
+            {{ type.viewValue }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <br/>
+      <mat-form-field>
+        <mat-label>CO2-emissions [g/km]</mat-label>
+        <input matInput placeholder="CO2-emissions" formControlName="co2Emissions" type="number" id="co2Emissions"
+               required>
+      </mat-form-field>
+      <br/>
+      <mat-form-field>
+        <mat-label>Power [kW]</mat-label>
+        <input matInput placeholder="Power" formControlName="power" type="number" id="power" required>
+      </mat-form-field>
+      <div>
+        <button id="forwardToContract" class="btn btn-primary" mat-button matStepperNext>Next</button>
+      </div>
+    </form>
+  </mat-step>
+
+  <mat-step [stepControl]="contractDetailsFormGroup">
+    <form [formGroup]="contractDetailsFormGroup">
+      <ng-template matStepLabel>Contract Details</ng-template>
+      <mat-form-field>
+        <mat-label>Date of Contract</mat-label>
+        <input matInput placeholder="Start date" formControlName="startDate" type="date" id="startDate" required>
+      </mat-form-field>
+      <br/>
+      <mat-form-field>
+        <mat-select placeholder="Coverage" formControlName="coverage">
+          <mat-option *ngFor="let level of this.coverageTable" [value]="level.id">
+            {{ level.description }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <br/>
+      <mat-form-field>
+        <mat-select placeholder="Bonus/Malus Level" formControlName="bonusMalusLevel">
+          <mat-option *ngFor="let level of this.bonusMalusTable" [value]="level.value">
+            {{ level.viewValue }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <br/>
+      <div class="btn-group">
+        <button id="backToCar" class="btn btn-secondary" mat-button matStepperPrevious>Back</button>
+        <button id="forwardToPerson" class="btn btn-primary" mat-button matStepperNext>Next</button>
+      </div>
+    </form>
+  </mat-step>
+
+  <mat-step [stepControl]="personDetailsFormGroup">
+    <div class="form-group">
+      <form [formGroup]="personDetailsFormGroup">
+        <ng-template matStepLabel>Person Details</ng-template>
+        <mat-form-field>
+          <mat-label>Name</mat-label>
+          <input matInput placeholder="Last name, first name" formControlName="name" id="name" required>
+        </mat-form-field>
+        <br/>
+        <mat-form-field>
+          <mat-label>Day of birth</mat-label>
+          <input matInput placeholder="DayOfBirth" formControlName="dayOfBirth" type="date" id="dayOfBirth" required>
+        </mat-form-field>
+        <br/>
+        <mat-form-field>
+          <mat-label>Zip Code</mat-label>
+          <input matInput placeholder="ZipCode" formControlName="zipCode" id="zipCode" required>
+        </mat-form-field>
+        <br/>
+        <div class="btn-group">
+          <button id="backToContract" class="btn btn-secondary" mat-button matStepperPrevious>Back</button>
+          <button id="forwardToSummary" class="btn btn-primary" mat-button (click)="calculate()" matStepperNext>Next</button>
+        </div>
+      </form>
+    </div>
+  </mat-step>
+
+  <mat-step>
+    <ng-template matStepLabel>Summary</ng-template>
+
+    <div class="card" style="width: 24rem;">
+      <div class="card-header">
+        Your monthly rates
+      </div>
+      <div class="row">
+        <div class="col">Tax</div>
+        <div class="col" id="tax">€ {{this.quote?.tax | number:'1.2-2'}}</div>
+      </div>
+      <div class="row">
+        <div class="col">Premium</div>
+        <div class="col" id="premium">€ {{this.quote?.premium| number:'1.2-2'}}</div>
+      </div>
+    </div>
+
+    <br/>
+
+    <div class="card" style="width: 24rem;">
+      <div class="card-header">
+        Your data
+      </div>
+
+      <div class="row">
+        <div class="col">Name</div>
+        <div class="col">{{this.personDetailsFormGroup.value.name}}</div>
+      </div>
+      <div class="row">
+        <div class="col">Day of birth</div>
+        <div class="col">{{this.personDetailsFormGroup.value.dayOfBirth}}</div>
+      </div>
+      <div class="row">
+        <div class="col">Address</div>
+        <div class="col">{{this.personDetailsFormGroup.value.zipCode}}</div>
+      </div>
+      <br/>
+      <div class="row">
+        <div class="col">Coverage</div>
+        <div class="col">{{this.contractDetailsFormGroup.value.coverage}}</div>
+      </div>
+      <div class="row">
+        <div class="col">Start date</div>
+        <div class="col">{{this.contractDetailsFormGroup.value.startDate}}</div>
+      </div>
+      <div class="row">
+        <div class="col">Bonus/malus level</div>
+        <div class="col">{{this.contractDetailsFormGroup.value.bonusMalusLevel}}</div>
+      </div>
+      <br/>
+      <div class="row">
+        <div class="col">Fuel type</div>
+        <div class="col">{{this.carDetailsFormGroup.value.fuelType}}</div>
+      </div>
+      <div class="row">
+        <div class="col">Co2-emissions</div>
+        <div class="col">{{this.carDetailsFormGroup.value.co2Emissions}}</div>
+      </div>
+      <div class="row">
+        <div class="col">Power</div>
+        <div class="col">{{this.carDetailsFormGroup.value.power}}</div>
+      </div>
+
+    </div>
+
+    <br/>
+    <div class="btn-group">
+      <button id="backToPerson" class="btn btn-secondary" mat-button matStepperPrevious>Back</button>
+      <button id="resetQuote" class="btn btn-secondary" mat-button (click)="stepper.reset()">Reset</button>
+      <button id="submitQuote" class="btn btn-primary" mat-button (click)="submit()">Submit</button>
+    </div>
+  </mat-step>
+</mat-horizontal-stepper>
