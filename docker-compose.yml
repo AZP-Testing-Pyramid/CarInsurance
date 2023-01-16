@@ -18,15 +18,3 @@ services:
       dockerfile: Dockerfile
     ports:
       - '8080:8080'
-    depends_on:
-      - db
-  
-  # Database Service (Mysql)
-  db:
-    image: mysql:8.0
-    ports:
-      - "3308:3306"
-    restart: on-failure
-    environment:
-      MYSQL_DATABASE: car_insurance
-      MYSQL_ROOT_PASSWORD: car_insurance
