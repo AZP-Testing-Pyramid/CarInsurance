@@ -22,7 +22,7 @@ Use docker compose building the server and the client docker images at once. Bui
 
 Controll the startup of the servers and the current log output with: 
 
-`docker compose up logs`
+`docker compose logs`
 
 Run the Cypress test 
 
