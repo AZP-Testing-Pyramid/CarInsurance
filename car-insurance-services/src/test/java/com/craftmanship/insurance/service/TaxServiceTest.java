@@ -16,8 +16,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.assertThat;
-@ExtendWith(SpringExtension.class)
-@SpringBootTest(classes = InsuranceServicesApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class TaxServiceTest {
 
     @Test
