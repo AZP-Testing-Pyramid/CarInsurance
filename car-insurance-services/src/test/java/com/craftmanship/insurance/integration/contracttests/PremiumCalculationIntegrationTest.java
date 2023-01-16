@@ -32,10 +32,40 @@ public class PremiumCalculationIntegrationTest {
 
     @Test
     public void calculatePremiumWithValidRESTContract() {
+        PremiumRequestDTO input = new PremiumRequestDTO(100, 9, 4000,3L);
+
+        PremiumResponseDTO result =
+                restTemplate.postForEntity(
+                                createURLWithPort("/premium"),
+                                input,
+                                PremiumResponseDTO.class)
+                        .getBody();
+
+
+        assertThat(result.premium()).isEqualTo(new BigDecimal("88.00"));
     }
 
-    @Test
-    public void calculatePremiumWithNullValuesShouldReturnPreconditionFailed() {
+    @ParameterizedTest
+    @CsvSource(
+            value = {"null, 9, 1000",
+                    "100, null, 1000",
+                    "100, 9, null"},
+            nullValues = {"null"}
+    )
+    public void calculatePremiumWithNullValuesShouldReturnPreconditionFailed(Integer power, Integer bonusMalus, Integer zipCode) {
+        PremiumRequestDTO input = new PremiumRequestDTO(power, bonusMalus, zipCode,3L);
+
+        var result =
+                restTemplate.postForEntity(
+                        createURLWithPort("/premium"),
+                        input,
+                        String.class);
+
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatusCode.valueOf(412));
+    }
+
+    private String createURLWithPort(String uri) {
+        return "http://localhost:" + port + uri;
     }
 
 }

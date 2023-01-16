@@ -29,15 +29,59 @@ public class TaxCalculationIntegrationTest {
     @Autowired
     private TestRestTemplate restTemplate;
 
-    @Test
-    public void calculateTaxWithValidRESTContract() {
+    private BigDecimal callService(TaxRequestDTO input) {
+        var result =
+                restTemplate.postForEntity(
+                                createURLWithPort("/tax"),
+                                input,
+                                TaxResponseDTO.class)
+                        .getBody();
+
+        return result.tax();
     }
 
     @Test
-    public void calculateTaxWithNullValuesShouldReturnPreconditionFailed() {
+    public void calculateTaxWithValidRESTContract() {
+
+        TaxRequestDTO input = new TaxRequestDTO(100, 100, "diesel", LocalDate.of(2022, 4, 21));
+
+        assertThat(callService(input)).isEqualTo(new BigDecimal("28.80"));
+    }
+
+    @ParameterizedTest
+    @CsvSource(
+            value = {"null, 100, hybrid",
+                    "100, null, hybrid",
+                    "100, 100, null"},
+            nullValues = {"null"}
+    )
+    public void calculateTaxWithNullValuesShouldReturnPreconditionFailed(Integer co2Emissions, Integer power, String fuelType) {
+        TaxRequestDTO input = new TaxRequestDTO(co2Emissions, power, fuelType, LocalDate.now());
+
+
+        var result = given()
+                .contentType("application/json")
+                .body(input)
+                .when()
+                .post(createURLWithPort("/tax"));
+
+        assertThat(result.statusCode()).isEqualTo(412);
     }
 
     @Test
     public void calculateTaxWithInvalidFuelTypeShouldReturnPreconditionFailed() {
+        TaxRequestDTO input = new TaxRequestDTO(100, 100, "abc", LocalDate.now());
+
+        var result =
+                restTemplate.postForEntity(
+                        createURLWithPort("/tax"),
+                        input,
+                        String.class);
+
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatusCode.valueOf(412));
+    }
+
+    private String createURLWithPort(String uri) {
+        return "http://localhost:" + port + uri;
     }
 }
