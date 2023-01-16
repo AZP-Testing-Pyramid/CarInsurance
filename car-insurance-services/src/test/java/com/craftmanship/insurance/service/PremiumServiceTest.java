@@ -16,12 +16,7 @@ import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@ExtendWith(SpringExtension.class)
-@SpringBootTest(classes = InsuranceServicesApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class PremiumServiceTest {
-
-    @Autowired
-    private TestRestTemplate restTemplate;
 
     public static final int NO_RISK_ZIP_CODE = 4000;
     public static final int STANDARD_POWER = 100;
