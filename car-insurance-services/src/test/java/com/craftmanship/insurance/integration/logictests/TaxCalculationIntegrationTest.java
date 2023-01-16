@@ -29,32 +29,102 @@ public class TaxCalculationIntegrationTest {
     private TestRestTemplate restTemplate;
 
 
+
     @Test
     public void calculateTaxForElectric() {
+
+        TaxRequestDTO input = new TaxRequestDTO(100, 100, "electricity", LocalDate.of(2022, 4, 21));
+
+        assertThat(callService(input)).isEqualTo(new BigDecimal("0.00"));
     }
 
-    @Test
-    public void calculateTaxForGasoline() {
+    @ParameterizedTest
+    @CsvSource({"165, 215, 144.00",
+            "110, 135, 46.80",
+            "65, 115, 7.20",})
+    public void calculateTaxForGasoline(int power, int co2Emissions, String expectedTax) {
+
+        TaxRequestDTO input = new TaxRequestDTO(co2Emissions, power, "gasoline", LocalDate.of(2022, 4, 21));
+
+        assertThat(callService(input)).isEqualTo(new BigDecimal(expectedTax));
     }
 
-    @Test
-    public void calculateTaxForDiesel() {
+    @ParameterizedTest
+    @CsvSource({"165, 215, 144.00",
+            "110, 135, 46.80",
+            "65, 115, 7.20",})
+    public void calculateTaxForDiesel(int power, int co2Emissions, String expectedTax) {
+
+        TaxRequestDTO input = new TaxRequestDTO(co2Emissions, power, "diesel", LocalDate.of(2022, 4, 21));
+
+        assertThat(callService(input)).isEqualTo(new BigDecimal(expectedTax));
     }
 
-    @Test
-    public void calculateTaxForHybrid() {
+    @ParameterizedTest
+    @CsvSource({"165, 215, 72.00",
+            "110, 135, 32.40",
+            "65, 115, 3.60",})
+    public void calculateTaxForHybrid(int power, int co2Emissions, String expectedTax) {
+
+        TaxRequestDTO input = new TaxRequestDTO(co2Emissions, power, "hybrid", LocalDate.of(2022, 4, 21));
+
+        assertThat(callService(input)).isEqualTo(new BigDecimal(expectedTax));
+    }
+
+    private BigDecimal callService(TaxRequestDTO input) {
+
+        var result =
+                restTemplate.postForEntity(
+                                createURLWithPort("/tax"),
+                                input,
+                                TaxResponseDTO.class)
+                        .getBody()
+                        .tax();
+        return result;
     }
 
     @Test
     public void calculateTaxWithValidContract() {
+
+        TaxRequestDTO input = new TaxRequestDTO(100, 100, "diesel", LocalDate.of(2022, 4, 21));
+
+        assertThat(callService(input)).isEqualTo(new BigDecimal("28.80"));
     }
 
-    @Test
-    public void calculateTaxWithInvalidParamsShouldReturnPreconditionFailed() {
+    @ParameterizedTest
+    @CsvSource(
+            value = {"null, 100, hybrid",
+                    "100, null, hybrid",
+                    "100, 100, null"},
+            nullValues = {"null"}
+    )
+    public void calculateTaxWithInvalidParamsShouldReturnPreconditionFailed(Integer co2Emissions, Integer power, String fuelType) {
+        TaxRequestDTO input = new TaxRequestDTO(co2Emissions, power, fuelType, LocalDate.now());
+
+        var result = given()
+                .contentType("application/json")
+                .body(input)
+                .when()
+                .post(createURLWithPort("/tax"));
+
+        assertThat(result.statusCode()).isEqualTo(412);
     }
 
     @Test
     public void calculateTaxWithInvalidFuelTypeShouldReturnPreconditionFailed() {
+        TaxRequestDTO input = new TaxRequestDTO(100, 100, "abc", LocalDate.now());
+
+        var result = given()
+                .contentType("application/json")
+                .body(input)
+                .when()
+                .post(createURLWithPort("/tax"));
+
+        assertThat(result.statusCode()).isEqualTo(412);
+    }
+
+    private String createURLWithPort(String uri) {
+        return "http://localhost:" + port + uri;
     }
 
 }

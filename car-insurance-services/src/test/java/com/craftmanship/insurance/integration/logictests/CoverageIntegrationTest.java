@@ -26,5 +26,16 @@ public class CoverageIntegrationTest {
 
     @Test
     public void shouldReadOnlyValidCoverageRessources() {
+        CoverageResponseDTO[] result =
+                restTemplate.getForEntity(
+                                createURLWithPort("/coverage"),
+                                CoverageResponseDTO[].class)
+                        .getBody();
+
+        assertThat(result).allMatch(coverage -> coverage.validFrom().getYear() >= LocalDate.now().getYear());
+    }
+
+    private String createURLWithPort(String uri) {
+        return "http://localhost:" + port + uri;
     }
 }
