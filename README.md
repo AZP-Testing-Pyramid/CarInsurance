@@ -30,4 +30,4 @@ Run the Cypress test
 
 Stop the application including all docker containers with the command:
 
-`docker-compose stop`
+`docker compose down`
