@@ -11,4 +11,4 @@ echo "Running Cypress e2e tests headlessly without copying files"
 #
 # Docker image "cypress/included:3.2.0" has its entrypoint
 # set to "cypress run" by default
-docker run -it --add-host host.docker.internal:host-gateway -v $PWD:/e2e -w /e2e cypress/included:10.3.1-typescript $@
+docker run -it --add-host=host.docker.internal:host-gateway -v $PWD:/e2e -w /e2e cypress/included:10.3.1-typescript $@
