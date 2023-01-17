@@ -26,5 +26,13 @@ public class CoverageIntegrationTest {
 
     @Test
     public void shouldReadOnlyValidCoverageRessources() {
+        // TODO: use Spring Boot Test to call the server
+            //FOr a list
+        //        var result = restTemplate.getForEntity(
+        //             http://localhost:" + port + "/coverage"";,
+        //              CoverageResponseDTO[].class)
+        //     .getBody();
+        // TODO: add your assertion(s)
+        // - tip: use either REST Assured or AssertJ to simplify the assertion code
     }
 }
