@@ -31,3 +31,25 @@ Run the Cypress test
 Stop the application including all docker containers with the command:
 
 `docker compose down`
+
+
+
+  e2e:
+    container_name: cypress
+    build:
+      context: car-insurance-app/e2e
+      dockerfile: Dockerfile
+    depends_on:
+      - car-insurance-app
+    # command: npx cypress run
+    # mount the host directory e2e/cypress and the file e2e/cypress.config.js as
+    # volumes within the container
+    # this means that:
+    #  1. anything that Cypress writes to these folders (e.g., screenshots,
+    #     videos) appears also on the Docker host's filesystem
+    #  2. any change that the developer applies to Cypress files on the host
+    #     machine immediately takes effect within the e2e container (no docker
+    #     rebuild required).
+    volumes:
+      - ./car-insurance-app/e2e/cypress:/app/cypress
+      - ./car-insurance-app/e2e/cypress.config.js:/app/cypress.config.js
