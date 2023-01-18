@@ -18,7 +18,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = InsuranceServicesApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -59,13 +58,12 @@ public class TaxCalculationIntegrationTest {
         TaxRequestDTO input = new TaxRequestDTO(co2Emissions, power, fuelType, LocalDate.now());
 
 
-        var result = given()
-                .contentType("application/json")
-                .body(input)
-                .when()
-                .post(createURLWithPort("/tax"));
+        var result =  restTemplate.postForEntity(
+                createURLWithPort("/tax"),
+                input,
+                String.class);
 
-        assertThat(result.statusCode()).isEqualTo(412);
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatusCode.valueOf(412));
     }
 
     @Test
