@@ -18,19 +18,4 @@ import java.time.LocalDate;
 import static org.assertj.core.api.Assertions.assertThat;
 class TaxServiceTest {
 
-    @Test
-    public void calculateTaxForElectric() {
-    }
-
-    @Test
-    public void calculateTaxForGasoline() {
-    }
-
-    @Test
-    public void calculateTaxForDiesel() {
-    }
-
-    @Test
-    public void calculateTaxForHybrid() {
-    }
 }

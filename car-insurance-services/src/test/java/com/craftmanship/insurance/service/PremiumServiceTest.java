@@ -18,19 +18,4 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class PremiumServiceTest {
 
-    public static final int NO_RISK_ZIP_CODE = 4000;
-    public static final int STANDARD_POWER = 100;
-    public static final int BONUS_MALUS_LEVEL = 9;
-
-   @Test
-    public void calculatePremiumWithDifferentBonusMalusLevels() {
-    }
-
-    @Test
-    public void calculatePremiumWithDifferentPowerRanges(int power, String expectedPremium) {
-    }
-
-    @Test
-    public void calculatePremiumWithDifferentRiskLocations(int zipCode, String expectedPremium) {
-    }
 }

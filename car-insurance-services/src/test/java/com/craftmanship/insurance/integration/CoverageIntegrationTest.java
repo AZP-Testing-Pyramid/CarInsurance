@@ -1,4 +1,4 @@
-package com.craftmanship.insurance.integration.contracttests;
+package com.craftmanship.insurance.integration;
 
 import com.craftmanship.insurance.InsuranceServicesApplication;
 import com.craftmanship.insurance.model.CoverageResponseDTO;
@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDate;
@@ -18,13 +19,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(classes = InsuranceServicesApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class CoverageIntegrationTest {
     @LocalServerPort
-    private int port = 8080;
+    private int port;
 
     @Autowired
     private TestRestTemplate restTemplate;
 
+    private String createURLWithPort(String uri) {
+        return "http://localhost:" + port + "/" + uri;
+    }
+
     @Test
-    public void shouldReadOnlyValidCoverageRessources() {
+    public void shouldReadValidCoverages() {
+        var result = restTemplate.getForEntity(createURLWithPort("coverage"), CoverageResponseDTO[].class);
+
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(result.getBody()).allMatch(coverage -> coverage.validFrom().getYear() >= LocalDate.now().getYear());
     }
 
 }

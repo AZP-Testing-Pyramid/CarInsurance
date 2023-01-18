@@ -4,7 +4,7 @@
 
 Welcome to our car insurance application. With our liability insurance, you can individually protect your motor vehicle easily and online. Motor vehicles with a maximum permissible gross weight of up to 3.5 tons are subject to engine-related insurance tax in addition to your premium.
 
-The architecture of the car insurance application consists of an UI, some services and a database.
+The architecture of the car insurance application consists of the UI (Angular), some services (Java and Spring framework) and a database.
 
 ## Angular App
 The UI is implemented with the Angular framework and there are a lot of UI test implemented with cypress (https://www.cypress.io/). The UI code is located in the folder 'car-insurance-app'. For detailed instructions read the README.md there.
@@ -20,13 +20,9 @@ Use docker compose building the server and the client docker images at once. Bui
 
 `docker compose up -d --build`
 
-Controll the startup of the servers and the current log output with: 
+Control the startup of the servers and the current log output with: 
 
 `docker compose logs`
-
-Run the Cypress test 
-
-
 
 Stop the application including all docker containers with the command:
 
