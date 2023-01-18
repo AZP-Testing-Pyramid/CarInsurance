@@ -1,6 +1,7 @@
-package com.craftmanship.insurance.integration;
+package com.craftmanship.insurance.integration.contracttests;
 
 import com.craftmanship.insurance.InsuranceServicesApplication;
+import com.craftmanship.insurance.model.PremiumResponseDTO;
 import com.craftmanship.insurance.model.TaxRequestDTO;
 import com.craftmanship.insurance.model.TaxResponseDTO;
 import org.junit.jupiter.api.Test;
@@ -17,7 +18,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SpringExtension.class)
@@ -61,13 +61,13 @@ public class TaxCalculationIntegrationTest {
     public void calculateTaxWithNullValuesShouldReturnPreconditionFailed(Integer co2Emissions, Integer power, String fuelType) {
         TaxRequestDTO input = new TaxRequestDTO(co2Emissions, power, fuelType, LocalDate.now());
 
-        var result = given()
-                .contentType("application/json")
-                .body(input)
-                .when()
-                .post(createURLWithPort("tax"));
 
-        assertThat(result.statusCode()).isEqualTo(412);
+        var result =  restTemplate.postForEntity(
+                createURLWithPort("tax"),
+                input,
+                String.class);
+
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatusCode.valueOf(412));
     }
 
     @Test
