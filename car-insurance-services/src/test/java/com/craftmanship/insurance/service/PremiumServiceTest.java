@@ -34,14 +34,9 @@ class PremiumServiceTest {
             "16, 176.00",
             "17, 176.00"})
     public void calculatePremiumWithDifferentBonusMalusLevels(int bonusMalusLevel, String expectedPremium) {
-        PremiumRequestDTO input = new PremiumRequestDTO(STANDARD_POWER, bonusMalusLevel, NO_RISK_ZIP_CODE, 1L);
+        PremiumRequestDTO input = new PremiumRequestDTO(STANDARD_POWER, bonusMalusLevel, NO_RISK_ZIP_CODE, 3L);
 
-        Coverage coverage = new Coverage();
-        coverage.setPercentagePremium(new BigDecimal("0.88"));
-        coverage.setMaxPremium(new BigDecimal("132"));
-        coverage.setMinPremium(new BigDecimal("23.76"));
-
-        assertThat(new PremiumService().calculatePremium(input, coverage)).isEqualTo(new BigDecimal(expectedPremium));
+        assertThat(callService(input)).isEqualTo(new BigDecimal(expectedPremium));
     }
 
     @ParameterizedTest
@@ -52,13 +47,9 @@ class PremiumServiceTest {
             "147, 132.00",
             "200, 132.00"})
     public void calculatePremiumWithDifferentPowerRanges(int power, String expectedPremium) {
-        PremiumRequestDTO input = new PremiumRequestDTO(power, BONUS_MALUS_LEVEL, NO_RISK_ZIP_CODE, 1L);
+        PremiumRequestDTO input = new PremiumRequestDTO(power, 9, NO_RISK_ZIP_CODE, 3L);
 
-        Coverage coverage = new Coverage();
-        coverage.setPercentagePremium(new BigDecimal("0.88"));
-        coverage.setMaxPremium(new BigDecimal("132"));
-        coverage.setMinPremium(new BigDecimal("23.76"));
-        assertThat(new PremiumService().calculatePremium(input, coverage)).isEqualTo(new BigDecimal(expectedPremium));
+        assertThat(callService(input)).isEqualTo(new BigDecimal(expectedPremium));
     }
 
     @ParameterizedTest
@@ -69,11 +60,18 @@ class PremiumServiceTest {
             "6667, 92.40",
             "9999, 92.40"})
     public void calculatePremiumWithDifferentRiskLocations(int zipCode, String expectedPremium) {
-        PremiumRequestDTO input = new PremiumRequestDTO(STANDARD_POWER, BONUS_MALUS_LEVEL, zipCode, 1L);
+        PremiumRequestDTO input = new PremiumRequestDTO(STANDARD_POWER, BONUS_MALUS_LEVEL, zipCode, 3L);
+
+        assertThat(callService(input)).isEqualTo(new BigDecimal(expectedPremium));
+    }
+
+    private BigDecimal callService(PremiumRequestDTO input) {
         Coverage coverage = new Coverage();
         coverage.setPercentagePremium(new BigDecimal("0.88"));
         coverage.setMaxPremium(new BigDecimal("132"));
         coverage.setMinPremium(new BigDecimal("23.76"));
-        assertThat(new PremiumService().calculatePremium(input, coverage)).isEqualTo(new BigDecimal(expectedPremium));
+
+        return new PremiumService().calculatePremium(input, coverage);
     }
+
 }
