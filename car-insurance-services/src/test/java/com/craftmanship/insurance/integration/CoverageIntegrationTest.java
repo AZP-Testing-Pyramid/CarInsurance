@@ -1,43 +1,40 @@
-package com.craftmanship.insurance.integration.contracttests;
+package com.craftmanship.insurance.integration;
 
 import com.craftmanship.insurance.InsuranceServicesApplication;
-import com.craftmanship.insurance.model.PremiumResponseDTO;
 import com.craftmanship.insurance.model.TaxRequestDTO;
-import com.craftmanship.insurance.model.TaxResponseDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
+
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = InsuranceServicesApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class TaxCalculationIntegrationTest {
+public class CoverageIntegrationTest {
     @LocalServerPort
-    private int port = 8080;
+    private int port;
 
     @Autowired
     private TestRestTemplate restTemplate;
 
-    @Test
-    public void calculateTaxWithValidRESTContract() {
+    private String createURLWithPort(String uri) {
+        return "http://localhost:" + port + uri;
     }
 
     @Test
-    public void calculateTaxWithNullValuesShouldReturnPreconditionFailed() {
+    public void shouldBecomeAUsefulTest() {
+        // TODO: call the REST API and assert the result
+        // - tip 1: either use Spring TestRestTemplate (https://spring.io/guides/gs/testing-web/)
+        //          or REST Assured (https://rest-assured.io/)
+        // - tip 2: use AssertJ to simplify the assertion code
+        //      assertThat(result.statusCode()).isEqualTo(412);
     }
 
-    @Test
-    public void calculateTaxWithInvalidFuelTypeShouldReturnPreconditionFailed() {
-    }
 }
