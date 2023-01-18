@@ -1,7 +1,6 @@
-package com.craftmanship.insurance.integration.contracttests;
+package com.craftmanship.insurance.integration;
 
 import com.craftmanship.insurance.InsuranceServicesApplication;
-import com.craftmanship.insurance.model.CoverageResponseDTO;
 import com.craftmanship.insurance.model.PremiumRequestDTO;
 import com.craftmanship.insurance.model.PremiumResponseDTO;
 import org.junit.jupiter.api.Test;
@@ -16,27 +15,30 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 
-import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
+
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = InsuranceServicesApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class PremiumCalculationIntegrationTest {
 
     @LocalServerPort
-    private final int port = 8080;
+    private int port;
 
     @Autowired
     private TestRestTemplate restTemplate;
 
+    private String createURLWithPort(String uri) {
+        return "http://localhost:" + port + "/" + uri;
+    }
+
     @Test
     public void calculatePremiumWithValidRESTContract() {
-        PremiumRequestDTO input = new PremiumRequestDTO(100, 9, 4000,3L);
+        PremiumRequestDTO input = new PremiumRequestDTO(100, 9, 4000, 3L);
 
         PremiumResponseDTO result =
                 restTemplate.postForEntity(
-                                createURLWithPort("/premium"),
+                                createURLWithPort("premium"),
                                 input,
                                 PremiumResponseDTO.class)
                         .getBody();
@@ -53,19 +55,15 @@ public class PremiumCalculationIntegrationTest {
             nullValues = {"null"}
     )
     public void calculatePremiumWithNullValuesShouldReturnPreconditionFailed(Integer power, Integer bonusMalus, Integer zipCode) {
-        PremiumRequestDTO input = new PremiumRequestDTO(power, bonusMalus, zipCode,3L);
+        PremiumRequestDTO input = new PremiumRequestDTO(power, bonusMalus, zipCode, 3L);
 
         var result =
                 restTemplate.postForEntity(
-                        createURLWithPort("/premium"),
+                        createURLWithPort("premium"),
                         input,
                         String.class);
 
         assertThat(result.getStatusCode()).isEqualTo(HttpStatusCode.valueOf(412));
-    }
-
-    private String createURLWithPort(String uri) {
-        return "http://localhost:" + port + uri;
     }
 
 }

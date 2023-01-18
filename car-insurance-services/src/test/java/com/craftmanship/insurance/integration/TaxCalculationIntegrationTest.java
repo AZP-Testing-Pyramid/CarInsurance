@@ -1,7 +1,6 @@
-package com.craftmanship.insurance.integration.contracttests;
+package com.craftmanship.insurance.integration;
 
 import com.craftmanship.insurance.InsuranceServicesApplication;
-import com.craftmanship.insurance.model.PremiumResponseDTO;
 import com.craftmanship.insurance.model.TaxRequestDTO;
 import com.craftmanship.insurance.model.TaxResponseDTO;
 import org.junit.jupiter.api.Test;
@@ -20,19 +19,24 @@ import java.time.LocalDate;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
+
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = InsuranceServicesApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class TaxCalculationIntegrationTest {
     @LocalServerPort
-    private int port = 8080;
+    private int port;
 
     @Autowired
     private TestRestTemplate restTemplate;
 
+    private String createURLWithPort(String uri) {
+        return "http://localhost:" + port + "/" + uri;
+    }
+
     private BigDecimal callService(TaxRequestDTO input) {
         var result =
                 restTemplate.postForEntity(
-                                createURLWithPort("/tax"),
+                                createURLWithPort("tax"),
                                 input,
                                 TaxResponseDTO.class)
                         .getBody();
@@ -42,7 +46,6 @@ public class TaxCalculationIntegrationTest {
 
     @Test
     public void calculateTaxWithValidRESTContract() {
-
         TaxRequestDTO input = new TaxRequestDTO(100, 100, "diesel", LocalDate.of(2022, 4, 21));
 
         assertThat(callService(input)).isEqualTo(new BigDecimal("28.80"));
@@ -58,12 +61,11 @@ public class TaxCalculationIntegrationTest {
     public void calculateTaxWithNullValuesShouldReturnPreconditionFailed(Integer co2Emissions, Integer power, String fuelType) {
         TaxRequestDTO input = new TaxRequestDTO(co2Emissions, power, fuelType, LocalDate.now());
 
-
         var result = given()
                 .contentType("application/json")
                 .body(input)
                 .when()
-                .post(createURLWithPort("/tax"));
+                .post(createURLWithPort("tax"));
 
         assertThat(result.statusCode()).isEqualTo(412);
     }
@@ -74,14 +76,11 @@ public class TaxCalculationIntegrationTest {
 
         var result =
                 restTemplate.postForEntity(
-                        createURLWithPort("/tax"),
+                        createURLWithPort("tax"),
                         input,
                         String.class);
 
         assertThat(result.getStatusCode()).isEqualTo(HttpStatusCode.valueOf(412));
     }
 
-    private String createURLWithPort(String uri) {
-        return "http://localhost:" + port + uri;
-    }
 }
