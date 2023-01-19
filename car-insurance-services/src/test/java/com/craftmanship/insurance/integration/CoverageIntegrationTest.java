@@ -1,6 +1,9 @@
 package com.craftmanship.insurance.integration;
 
 import com.craftmanship.insurance.InsuranceServicesApplication;
+import com.craftmanship.insurance.model.CoverageResponseDTO;
+import com.craftmanship.insurance.model.PremiumRequestDTO;
+import com.craftmanship.insurance.model.PremiumResponseDTO;
 import com.craftmanship.insurance.model.TaxRequestDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,7 +13,9 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -30,11 +35,8 @@ public class CoverageIntegrationTest {
 
     @Test
     public void shouldBecomeAUsefulTest() {
-        // TODO: call the REST API and assert the result
-        // - tip 1: either use Spring TestRestTemplate (https://spring.io/guides/gs/testing-web/)
-        //          or REST Assured (https://rest-assured.io/)
-        // - tip 2: use AssertJ to simplify the assertion code
-        //      assertThat(result.statusCode()).isEqualTo(412);
+    	List<?> response = restTemplate.getForObject(createURLWithPort("/coverage"), List.class);
+    	assertThat(response.size()).isGreaterThan(0);
     }
 
 }

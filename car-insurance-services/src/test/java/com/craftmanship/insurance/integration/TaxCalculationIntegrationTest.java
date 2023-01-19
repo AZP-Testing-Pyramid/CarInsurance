@@ -1,6 +1,14 @@
 package com.craftmanship.insurance.integration;
 
 import com.craftmanship.insurance.InsuranceServicesApplication;
+import com.craftmanship.insurance.service.TaxService;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +16,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import com.craftmanship.insurance.model.*;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = InsuranceServicesApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -24,11 +34,10 @@ public class TaxCalculationIntegrationTest {
 
     @Test
     public void shouldBecomeAUsefulTest() {
-        // TODO: call the REST API and assert the result
-        // - tip 1: either use Spring TestRestTemplate
-        //          or REST Assured (https://rest-assured.io/)
-        // - tip 2: use AssertJ to simplify the assertion code
-        //      assertThat(result.statusCode()).isEqualTo(412);
+    	TaxResponseDTO res = restTemplate.postForObject(createURLWithPort("/tax"), //
+    			new TaxRequestDTO(0, 200, "electricity", LocalDate.now()), //
+    			TaxResponseDTO.class);
+    	Assertions.assertThat(res.tax()).isEqualTo(BigDecimal.ZERO.setScale(2));
     }
 
 }
