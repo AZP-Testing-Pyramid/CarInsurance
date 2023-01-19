@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.math.BigDecimal;
@@ -35,8 +36,8 @@ public class CoverageIntegrationTest {
 
     @Test
     public void shouldBecomeAUsefulTest() {
-    	List<?> response = restTemplate.getForObject(createURLWithPort("/coverage"), List.class);
-    	assertThat(response.size()).isGreaterThan(0);
+    	ResponseEntity<List> response = restTemplate.getForEntity(createURLWithPort("/coverage"), List.class);
+    	assertThat(response.getBody().size()).isGreaterThan(0);
     }
 
 }
