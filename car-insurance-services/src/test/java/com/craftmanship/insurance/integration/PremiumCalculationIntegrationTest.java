@@ -34,10 +34,10 @@ public class PremiumCalculationIntegrationTest {
     @Test
     public void shouldBecomeAUsefulTest() {
     	
-    	PremiumResponseDTO responseDTO = restTemplate.postForObject(createURLWithPort("/premium"), 
+    	ResponseEntity<PremiumResponseDTO> responseDTO = restTemplate.postForEntity(createURLWithPort("/premium"), 
     			new PremiumRequestDTO(200, 9, 1190, 1l), PremiumResponseDTO.class);
     	
-    	assertThat(responseDTO.premium()).isGreaterThan(BigDecimal.ZERO);
+    	assertThat(responseDTO.getBody().premium()).isGreaterThan(BigDecimal.ZERO);
     }
 
 }

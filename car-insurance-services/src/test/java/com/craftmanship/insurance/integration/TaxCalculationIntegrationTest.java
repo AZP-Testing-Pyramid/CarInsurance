@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.craftmanship.insurance.model.*;
@@ -34,10 +35,10 @@ public class TaxCalculationIntegrationTest {
 
     @Test
     public void shouldBecomeAUsefulTest() {
-    	TaxResponseDTO res = restTemplate.postForObject(createURLWithPort("/tax"), //
+    	ResponseEntity<TaxResponseDTO> res = restTemplate.postForEntity(createURLWithPort("/tax"), //
     			new TaxRequestDTO(0, 200, "electricity", LocalDate.now()), //
     			TaxResponseDTO.class);
-    	Assertions.assertThat(res.tax()).isEqualTo(BigDecimal.ZERO.setScale(2));
+    	Assertions.assertThat(res.getBody().tax()).isEqualTo(BigDecimal.ZERO.setScale(2));
     }
 
 }
