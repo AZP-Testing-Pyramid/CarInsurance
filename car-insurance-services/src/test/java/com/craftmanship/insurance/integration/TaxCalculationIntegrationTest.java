@@ -4,6 +4,7 @@ import com.craftmanship.insurance.InsuranceServicesApplication;
 import com.craftmanship.insurance.model.PremiumResponseDTO;
 import com.craftmanship.insurance.model.TaxRequestDTO;
 import com.craftmanship.insurance.model.TaxResponseDTO;
+import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -67,7 +68,7 @@ public class TaxCalculationIntegrationTest {
                 input,
                 String.class);
 
-        assertThat(result.getStatusCode()).isEqualTo(HttpStatusCode.valueOf(412));
+        assertThat(result.getStatusCode().value()).isEqualTo(HttpStatus.SC_PRECONDITION_FAILED);
     }
 
     @Test
@@ -80,7 +81,7 @@ public class TaxCalculationIntegrationTest {
                         input,
                         String.class);
 
-        assertThat(result.getStatusCode()).isEqualTo(HttpStatusCode.valueOf(412));
+        assertThat(result.getStatusCode().value()).isEqualTo(HttpStatus.SC_PRECONDITION_FAILED);
     }
 
 }
